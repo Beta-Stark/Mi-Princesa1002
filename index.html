@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nail Studio VIP • Para Usted</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #fff0f5 0%, #fcddec 50%, #f8bbd0 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: #f8bbd0;
+            --accent-pink: #d81b60;
+            --accent-soft: #f48fb1;
+            --text-main: #880e4f;
+            --text-sub: #555555;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            color: var(--text-main);
+        }
+
+        .app-container {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border-color);
+            border-radius: 32px;
+            padding: 28px 22px;
+            max-width: 410px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(216, 27, 96, 0.12);
+            position: relative;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--accent-soft), var(--accent-pink));
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #4caf50;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #4caf50;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .title-section h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            text-align: center;
+        }
+
+        .title-section p {
+            color: var(--text-sub);
+            font-size: 0.92rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .builder-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--accent-pink);
+            margin-bottom: 12px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        /* GALERÍA DE TARJETAS DE DISEÑO */
+        .design-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .design-card {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 18px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .design-card img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .design-card span {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            display: block;
+        }
+
+        /* OPCIÓN PERSONALIZADA */
+        .custom-card-icon {
+            width: 100%;
+            height: 110px;
+            background: #fce4ec;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            border: 1px dashed var(--accent-pink);
+            color: var(--accent-pink);
+        }
+
+        /* ESTADO ACTIVO SELECCIONADO */
+        .design-card.active {
+            background: #fce4ec;
+            border-color: var(--accent-pink);
+            box-shadow: 0 4px 15px rgba(216, 27, 96, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .design-card.active span {
+            color: var(--accent-pink);
+            font-weight: 700;
+        }
+
+        /* CAMPO DE TEXTO PARA DISEÑO PROPIO */
+        .custom-input-box {
+            display: none;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .custom-input-box input {
+            width: 100%;
+            background: #ffffff;
+            border: 1.5px solid var(--accent-pink);
+            border-radius: 14px;
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .custom-input-box input::placeholder {
+            color: #aaa;
+        }
+
+        /* TICKET RESUMEN */
+        .summary-card {
+            background: #fff8fa;
+            border-radius: 20px;
+            padding: 18px;
+            border: 1.5px dashed var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            margin-bottom: 10px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label { color: var(--text-sub); }
+        .summary-val { font-weight: 600; color: var(--text-main); text-align: right; max-width: 60%; }
+
+        /* ANIMACIÓN DE COSTO CUBIERTO POR SU NOVIO */
+        .animated-cost {
+            font-weight: 800 !important;
+            color: #2e7d32 !important;
+            display: inline-block;
+            animation: pulseGlow 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.95; }
+            50% { transform: scale(1.03); opacity: 1; text-shadow: 0 0 8px rgba(76, 175, 80, 0.4); }
+            100% { transform: scale(1); opacity: 0.95; }
+        }
+
+        /* BOTÓN DE ACCIÓN */
+        .action-btn {
+            background: linear-gradient(135deg, var(--accent-soft), var(--accent-pink));
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 22px;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(216, 27, 96, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* MENSAJE DE CONFIRMACIÓN */
+        .confirmation-overlay {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .confirmation-card {
+            background: #e8f5e9;
+            border: 1.5px solid #81c784;
+            padding: 22px;
+            border-radius: 20px;
+            margin-top: 15px;
+        }
+
+        .confirmation-card h2 {
+            color: #2e7d32;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .confirmation-card p {
+            font-size: 0.95rem;
+            color: #1b5e20;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div class="app-header">
+            <span class="brand-badge">Pase Oficial</span>
+            <div class="status-dot"></div>
+        </div>
+
+        <div class="title-section">
+            <h1>Mi vida esto es para usted</h1>
+            <p>Mi vida, este es un vale personalizado totalmente válido para usted. Elija una de las opciones sugeridas o indique su propio estilo.</p>
+        </div>
+
+        <!-- SELECCIONADOR DE DISEÑOS -->
+        <div id="builderSection">
+            <div class="builder-title">Elija la opción de su preferencia</div>
+            
+            <div class="design-grid">
+                <div class="design-card active" onclick="selectDesign(this, 'Opción 1', false)">
+                    <img src="diseno1.jpg" alt="Diseño 1">
+                    <span>Opción 1</span>
+                </div>
+                
+                <div class="design-card" onclick="selectDesign(this, 'Opción 2', false)">
+                    <img src="diseno2.jpg" alt="Diseño 2">
+                    <span>Opción 2</span>
+                </div>
+                
+                <div class="design-card" onclick="selectDesign(this, 'Opción 3', false)">
+                    <img src="diseno3.jpg" alt="Diseño 3">
+                    <span>Opción 3</span>
+                </div>
+                
+                <div class="design-card" onclick="selectDesign(this, 'Personalizado', true)">
+                    <div class="custom-card-icon">✨</div>
+                    <span>Mi propio diseño</span>
+                </div>
+            </div>
+
+            <!-- CAMPO PARA ESCRIBIR SI ELIGE PERSONALIZADO -->
+            <div class="custom-input-box" id="customInputBox">
+                <input type="text" id="customText" placeholder="Escriba aquí su idea o diseño..." oninput="updateCustomText(this.value)">
+            </div>
+
+            <!-- RESUMEN -->
+            <div class="summary-card">
+                <div class="summary-row">
+                    <span class="summary-label">Elección:</span>
+                    <span class="summary-val" id="valDesign">Opción 1</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Lugar:</span>
+                    <span class="summary-val">El salón que usted prefiera</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Vigencia:</span>
+                    <span class="summary-val">El día y la hora que usted disponga</span>
+                </div>
+            </div>
+
+            <button class="action-btn" id="claimBtn" onclick="confirmBooking()">Confirmar Reserva de Cita 💖</button>
+        </div>
+
+        <!-- MENSAJE DE CONFIRMACIÓN -->
+        <div class="confirmation-overlay" id="confirmSection">
+            <div class="summary-card">
+                <div class="summary-row">
+                    <span class="summary-label">Diseño:</span>
+                    <span class="summary-val" id="finalSelection">Opción 1</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Lugar:</span>
+                    <span class="summary-val">Su salón favorito</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Costo:</span>
+                    <span class="summary-val animated-cost">COSTO 100% CUBIERTO POR SU NOVIO</span>
+                </div>
+            </div>
+
+            <div class="confirmation-card">
+                <h2>✨ ¡VALE ACTIVADO CON ÉXITO!</h2>
+                <p>Mi vida, la cita ha quedado reservada en el sistema. 💌</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let selectedDesignName = "Opción 1";
+        let isCustom = false;
+
+        function selectDesign(card, name, customFlag) {
+            playClickSound();
+
+            document.querySelectorAll('.design-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+
+            isCustom = customFlag;
+            const inputBox = document.getElementById('customInputBox');
+
+            if (isCustom) {
+                inputBox.style.display = 'block';
+                const currentInput = document.getElementById('customText').value.trim();
+                selectedDesignName = currentInput !== "" ? "Personalizado: " + currentInput : "Mi propio diseño";
+            } else {
+                inputBox.style.display = 'none';
+                selectedDesignName = name;
+            }
+
+            document.getElementById('valDesign').innerText = selectedDesignName;
+        }
+
+        function updateCustomText(val) {
+            if (isCustom) {
+                selectedDesignName = val.trim() !== "" ? "Personalizado: " + val : "Mi propio diseño";
+                document.getElementById('valDesign').innerText = selectedDesignName;
+            }
+        }
+
+        function confirmBooking() {
+            playSuccessSound();
+
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f48fb1', '#f8bbd0', '#d81b60', '#ffffff', '#4caf50']
+            });
+
+            document.getElementById('builderSection').style.display = 'none';
+            document.getElementById('finalSelection').innerText = selectedDesignName;
+            document.getElementById('confirmSection').style.display = 'block';
+        }
+
+        function playClickSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, ctx.currentTime);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.05);
+            } catch(e) {}
+        }
+
+        function playSuccessSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                osc.frequency.setValueAtTime(1046.50, now + 0.3);
+                
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 0.6);
+            } catch(e) {}
+        }
+    </script>
+</body>
+</html>
